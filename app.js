@@ -1,7 +1,35 @@
 
-// select a random place from the array
-//let actualPlace = places[Math.floor(Math.random() * places.length)];
-let actualPlace= places[0];
+// Variabili globali che ci serviranno dopo per memorizzare i dati del gioco
+let map;
+let utentMarker = null; // Il "pin" che l'utente metterà sulla mappa
+let coordChoosen = null; // Le coordinate cliccate dall'utente
+let realMarker = null;
+let polyline = null;
+
+// Variabili di stato del gioco
+let gamePlaces = [];     // Conterrà i 5 luoghi estratti a caso per questa partita
+let currentRound = 0;    // Round attuale (da 0 a 4)
+let totalScore = 0;      // Punteggio totale accumulato
+let isRoundOver = false; // Stato del round
+const NUMBER_OF_GAMES=3;
+
+//----------------------------------
+//fisher yates shuffle
+
+function startgame(){
+
+    let shuffled = [...places]; // copia dei places così non la modifichiamo
+    for (let i=shuffled.length -1; i>0; i--){
+        const j= Math.floor(Math.random() * (i+1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; //swap
+    }
+    gamePlaces=shuffled.slice(0,NUMBER_OF_GAMES);
+
+    actualPlace=gamePlaces[currentRound];
+}
+
+
+startgame();
 
 // 2. inizialization of the 360° visor - Pannellum
 // we are saying to the library to use the div named landscape
@@ -11,12 +39,6 @@ let visor = pannellum.viewer('landscape', {
     "autoLoad": true
 });
 
-// Variabili globali che ci serviranno dopo per memorizzare i dati del gioco
-let map;
-let utentMarker = null; // Il "pin" che l'utente metterà sulla mappa
-let coordChoosen = null; // Le coordinate cliccate dall'utente
-let realMarker = null;
-let polyline = null;
 
 // ==========================================
 // 3. INIZIALIZZAZIONE DELLA MAPPA (Leaflet)
