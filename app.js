@@ -12,6 +12,7 @@ let currentRound = 0;    // Round attuale (da 0 a 4)
 let totalScore = 0;      // Punteggio totale accumulato
 let isRoundOver = false; // Stato del round
 const NUMBER_OF_GAMES=3;
+const MAX_POINTS = 5000;
 
 //----------------------------------
 //fisher yates shuffle
@@ -103,7 +104,7 @@ const actionBtn = document.getElementById('btn-enter');
 
 actionBtn.addEventListener('click', function() {
     
-    // CASO A: Il round è in corso e l'utente clicca "Guess"
+    // CASO A: utente click guess: end of the actual round
     if (!isRoundOver) {
         
         // 1. Calcoliamo la distanza
@@ -113,15 +114,16 @@ actionBtn.addEventListener('click', function() {
         );
 
         // 2. Calcoliamo il punteggio
-        let points = 0;
+        let roundPoints = 0;
         if (distance < 25) {
-            points = 5000;
+            roundPoints = 5000;
         } else {
-            points = Math.round(5000 * Math.exp(-distance / 2000));
+            roundPoints = Math.round(5000 * Math.exp(-distance / 2000));
         }
 
+        totalScore += roundPoints;
         // 3. Aggiorniamo i punti totali nell'HTML
-        document.getElementById('points').innerText = points;
+        document.getElementById('points').innerText = totalScore;
 
         // 4. Mostriamo il punto reale (cerchio rosso)
         realMarker = L.circleMarker([actualPlace.lat, actualPlace.lon], {
@@ -144,18 +146,24 @@ actionBtn.addEventListener('click', function() {
         // Trasformiamo il bottone per il prossimo round
         actionBtn.innerText = "Next Round";
         
-        alert(`Hai sbagliato di ${Math.round(distance)} km. Punteggio: ${points} punti!`);
-
+        
+        if (currentRound < NUMBER_OF_GAMES){
+            actionBtn.innerText = "Next round";
+        } else {
+            actionBtn.innerText = "View final score";
+        }
+        
+        alert(`Round ${currentRound +1}. Error: ${Math.round(distance)} km. Score: ${roundPoints} points, porco dio!`);
     } 
-    // CASO B: Il round era già finito e l'utente clicca "Next Round"
+    // CASO B: Il round era già finito e l'utente clicca "Next Round" o view final score
     else {
         currentRound++;
 
         // Controlliamo se ci sono ancora luoghi disponibili nell'array
-        if (currentRound < places.length) {
+        if (currentRound < NUMBER_OF_GAMES) {
             
             // 1. Passiamo al nuovo luogo
-            actualPlace = places[currentRound];
+            actualPlace = gamePlaces[currentRound];
 
             //2 destroy old visor and build a new one
             visor.destroy(); 
@@ -184,7 +192,7 @@ actionBtn.addEventListener('click', function() {
             
         } else {
             // Se i luoghi sono finiti
-            alert("Gioco terminato! Hai completato tutti i round.");
+            alert(`Game ended. Final score: ${totalScore}/${NUMBER_OF_GAMES * MAX_POINTS}"`);
             actionBtn.disabled = true;
             actionBtn.innerText = "Game Over";
         }
