@@ -1,0 +1,73 @@
+/* 1. Reset iniziale: azzera i margini del browser */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* 2. the 3d image must use the whole display */
+#landscape {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1; /*z index è la posizione del foglio: 1 è la più profonda*/
+}
+
+/* 3. map on a angle, over the landscape */
+#map {
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    border: 3px solid white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    z-index: 10;
+    transition: width 0.3s, height 0.3s;
+}
+
+/*Map gets bigger when you pass the mouse over it*/
+#map:hover {
+    width: 450px;
+    height: 300px;
+}
+
+/* 4. Il pannello in alto con punteggio e bottone */
+#interface {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px 25px;
+    border-radius: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    z-index: 10;
+    color: white;
+}
+
+/* Stile del bottone */
+button {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Stile del bottone quando è disabilitato */
+button:disabled {
+    background-color: #555;
+    color: #aaa;
+    cursor: not-allowed;
+}
