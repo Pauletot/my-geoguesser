@@ -8,37 +8,51 @@ let polyline = null;
 
 // Variabili di stato del gioco
 let gamePlaces = [];     // Conterrà i 5 luoghi estratti a caso per questa partita
-let currentRound = 0;    // Round attuale (da 0 a 4)
+let currentRound = 0;    // Round attuale
 let totalScore = 0;      // Punteggio totale accumulato
 let isRoundOver = false; // Stato del round
-const NUMBER_OF_GAMES=3;
+let actualPlace;
+let visor;
+
+const NUMBER_OF_GAMES=5;
 const MAX_POINTS = 5000;
 
-//----------------------------------
-//fisher yates shuffle
 
-function startgame(){
 
-    let shuffled = [...places]; // copia dei places così non la modifichiamo
-    for (let i=shuffled.length -1; i>0; i--){
-        const j= Math.floor(Math.random() * (i+1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; //swap
+
+// Funzione per caricare il file JSON e far partire il gioco
+async function starGame() {
+    try {
+        // 1. Leggiamo il file JSON statico
+        const response = await fetch('places.json');
+        const testo = await response.text();
+        
+        // 2. Convertiamo le righe del file in un array di oggetti JavaScript
+        const places = testo.trim().split('\n').map(linea => JSON.parse(linea));
+        
+        // 3. Avviamo lo shuffle (Fisher-Yates) inserendo la tua logica esistente
+        let shuffled = [...places]; 
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        gamePlaces = shuffled.slice(0, NUMBER_OF_GAMES);
+        actualPlace = gamePlaces[currentRound];
+
+        // 4. Inizializziamo il visore Pannellum (spostato qui dentro perché serve che i dati siano pronti)
+        visor = pannellum.viewer('landscape', {
+            "type": "equirectangular",
+            "panorama": actualPlace.pic,
+            "autoLoad": true
+        });
+
+    } catch (errore) {
+        console.error("Errore nel caricamento dei luoghi:", errore);
     }
-    gamePlaces=shuffled.slice(0,NUMBER_OF_GAMES);
-
-    actualPlace=gamePlaces[currentRound];
 }
 
-
-startgame();
-
-// 2. inizialization of the 360° visor - Pannellum
-// we are saying to the library to use the div named landscape
-let visor = pannellum.viewer('landscape', {
-    "type": "equirectangular",
-    "panorama": actualPlace.pic,
-    "autoLoad": true
-});
+// Facciamo partire il flusso
+starGame();
 
 
 // ==========================================
@@ -93,9 +107,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c; // Ritorna la distanza in km
 }
-// Variabili di stato per gestire i round
-let currentRound = 0;
-let isRoundOver = false; // Ci dice se l'utente ha già premuto "Guess"
 
 // ==========================================
 // 6. GESTIONE DEL BOTTONE (GUESS / NEXT)
