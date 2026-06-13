@@ -4,7 +4,7 @@
 export const GAME_CONFIG = {
     NUMBER_OF_GAMES: 5,
     MAX_POINTS: 5000,
-    MAX_TIME: 15 // 15 seconds as requested in your constant
+    MAX_TIME: 90
 };
 
 // Mutable Game State
