@@ -23,12 +23,16 @@
         <button id="btn-enter" disabled>Guess</button>
     </div>
 
+    <div id="timer-container" style="position: absolute; top: 20px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; font-family: monospace; font-size: 24px; border-radius: 5px; border: 2px solid #ff4757; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+    TEMPO: <span id="countdown">01:30</span>
+    </div>
+
     <!--script load the js files-->
     <!--this link to the library leaflet: manage the map-->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!--this link for the library pannelum: trasform a flat image and to a 3d one-->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-
-    <script src="app.js"></script>
+    
+    <script type="module" src="main.js"></script>
 </body>
 </html>
